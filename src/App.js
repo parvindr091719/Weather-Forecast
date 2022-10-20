@@ -1,80 +1,79 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import './App.css';
-import {getWeatherData} from './component/WeatherAPI';
-import {ScaleLoader} from 'react-spinners';
 
 function App() {
-  const [weatherdata, setWeatherData] = useState(null);
-  const [city, setCity] = useState('Lahore');
-  const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState("");
+  const [data, setData] = useState({});
 
-  useEffect(() => {
-    getData();
-  }, []);
+  const url = `http://api.weatherstack.com/current?access_key=3dd5d6b56b1a4b3b75d8cafd09a9f3b4&query=${location}`;
 
-  const getData = async () => {
-    try{
-        setLoading(true);
-        const data = await getWeatherData(city);
-        setWeatherData(data);
-        setLoading(false);
-    }catch(error) {
-      console.log(error.message);
-      setLoading(false);
+  const searchLocation = (event) => {
+    if (event.key === "Enter") {
+      axios.get(url).then((response) => {
+        setData(response.data);
+        console.log(response.data);
+      });
+      setLocation("");
     }
-  }
-
-  const override = `
-  display: block;
-  margin: 0 auto;
-  border-color: red;
-  `;
-
+  };
 
   return (
-    <div className="App">
-      <div className="card">
-        <h2 className="title"><i className="fa fa-cloud"></i>Weather App</h2>
-        <div className="search-form">
-          <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter your city name"/>
-          <button type="button" onClick={() => getData()}>Search</button>
+    <>
+      <div className='wrap'>
+        <div className='search'>
+          <input
+            value={location}
+            onChange={(event) => setLocation(event.target.value)}
+            onKeyPress={searchLocation}
+            placeholder="Enter Location"
+            type="text"
+          />
         </div>
-        {loading ? (
-          <div className="loader-container">
-            <ScaleLoader
-              css={override}
-              size={200}
-              color= {"#fff"}
-              loading= {loading}
-              />
-          </div>
-        ) : (
-          <>
-          {weatherdata !== null ? (
-          <div className="main-container">
-            <h4>Live Weather Condition</h4>
-            <div className="weather-icon">
-              <img src={`http://weatherstack.com/img/w/${weatherdata.weather[0].icon}.jpg`} alt="imgicon"/>
-            </div>
-            <h3>{weatherdata.weather[0].main}</h3>
-            <div className="temprature">
-              <h1>{parseFloat(weatherdata.main.temp - 273.15).toFixed(1)}&deg;C</h1>
-            </div>
-            <div className="location">
-              <h3><i className="fa fa-street-view"></i>{weatherdata.name} | {weatherdata.sys.country}</h3>
-            </div>
-            <div className="temprature-range">
-              <h6>Min: {parseFloat(weatherdata.main.temp_min - 273.15).toFixed(1)}&deg;C 
-              || Max: {parseFloat(weatherdata.main.temp_max - 273.15).toFixed(1)}&deg;C 
-              || Humidity: {weatherdata.main.humidity}%</h6>
-            </div>
-        </div>
-        ) : null}
-          </>
-        ) }       
       </div>
-    </div>
-  );
+
+      {data?.current?.temperature !== undefined && <>
+        <div className='widget'>
+          <div className='weatherIcon'>
+            <i className="wi wi-day-sunny"></i>
+          </div>
+
+          <div className='weatherInfo'>
+            <div className='temprature'>
+              <span>{data?.current?.temperature}&deg;C</span>
+            </div>
+            <div className='description'>
+              <div className='weatherCond'>{data?.current?.weather_descriptions[0]}</div>
+              <div className='place'>{data?.location?.name} , {data?.location?.country}</div>
+            </div>
+          </div>
+
+          <div className='date'>{new Date().toDateString()}</div>
+
+          <div className='extra-temp'>
+            <div className='temp-info-minmax'>
+              <div className='two-sided-section'>
+                <p><i className={'wi wi-humidity'}></i></p>
+                <p className='extra-info-leftside'> {data?.current?.humidity} % <br /> Humidity </p>
+              </div>
+
+              <div className='two-sided-section'>
+                <p><i className={'wi wi-rain'}></i></p>
+                <p className='extra-info-leftside'> {data?.current?.pressure} <br /> Pressure </p>
+              </div>
+
+              <div className='two-sided-section'>
+                <p><i className={'wi wi-strong-wind'}></i></p>
+                <p className='extra-info-leftside'> {data?.current?.wind_speed}<br /> Speed </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </>}
+
+    </>
+  )
 }
 
 export default App;
