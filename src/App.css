@@ -10,6 +10,9 @@ body{
     background-color: rgb(100, 65, 226);
     background: url(https://png.pngtree.com/background/20220716/original/pngtree-cartoon-black-atmospheric-weather-forecast-illustration-background-picture-image_1640761.jpg);
     /* background: rgb(43, 6, 131); */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 208vh 100vh;
     height: 100vh;
     min-height: 100vh;
     display: grid;
