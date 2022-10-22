@@ -3,10 +3,10 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
-  const [location, setLocation] = useState("");
-  const [data, setData] = useState({});
+  const [location, setLocation] = useState("");//66a0dd12a97e3669fcb02a61341fab18
+  const [data, setData] = useState({});//3dd5d6b56b1a4b3b75d8cafd09a9f3b4
 
-  const url = `http://api.weatherstack.com/current?access_key=3dd5d6b56b1a4b3b75d8cafd09a9f3b4&query=${location}`;
+  const url = `http://api.weatherstack.com/current?access_key=66a0dd12a97e3669fcb02a61341fab18&query=${location}`;
 
   const searchLocation = (event) => {
     if (event.key === "Enter") {
