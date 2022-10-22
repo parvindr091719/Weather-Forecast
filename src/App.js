@@ -22,6 +22,8 @@ function App() {
     <>
       <div className='wrap'>
         <div className='search'>
+          <p className="Note"> Important Note: Please Check Setting Go to Insecure Content and change "block" to "allow" </p>
+          <br/>
           <input
             value={location}
             onChange={(event) => setLocation(event.target.value)}
